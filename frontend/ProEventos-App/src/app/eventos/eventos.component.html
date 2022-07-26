@@ -1,6 +1,5 @@
 <h2>Eventos</h2>
 <hr />
-
 <div class="form-inline">
   <div class="input-group mb-2">
     <label class="input-group-text">Filtrar</label>
@@ -20,7 +19,10 @@
           class="btn btn-outline-light btn-sm"
           (click)="EsconderImagens()"
         >
-          {{ esconderImagens ? "Esconder \n Imagem" : "Exibir \nImagem" }}
+          <i
+            class="{{ esconderImagens ? 'fa fa fa-eye-slash' : 'fa fa-eye' }}"
+          ></i>
+          {{ esconderImagens ? "Esconder" : "Exibir" }}
         </button>
       </th>
       <th>#</th>
@@ -28,7 +30,7 @@
       <th>Local</th>
       <th>Data</th>
       <th>Quantidade Pessoas</th>
-      <th>Lote</th>
+      <!-- <th>Lote</th> -->
       <th>Opções</th>
     </tr>
   </thead>
@@ -43,17 +45,28 @@
           [style.margin.px]="marginImg"
         />
       </td>
-      <td>{{ eventos.eventoId }}</td>
-      <td>{{ eventos.tema }}</td>
+      <td>{{ eventos.id }}</td>
+      <td>{{ eventos.tema | uppercase }}</td>
       <td>{{ eventos.local }}</td>
-      <td>{{ eventos.dataEvento }}</td>
+      <td>{{ eventos.dataEvento | DateTimeFormatPipe }}</td>
       <td>{{ eventos.qtdPessoas }}</td>
-      <td>{{ eventos.lote }}</td>
+      <!-- <td>{{ eventos.lotes[0].nome | uppercase }}</td> -->
       <td>
         <div>
-          <button type="button" class="btn btn-outline-primary">Editar</button>
-          <button type="button" class="btn btn-outline-danger ms-2">
-            Excluir
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            tooltip="Editar"
+          >
+            <i class="fa fa-edit"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-danger ms-2"
+            tooltip="Excluir"
+            (click)="openModal(template)"
+          >
+            <i class="fa fa-trash"></i>
           </button>
         </div>
       </td>
@@ -67,3 +80,15 @@
     </tr>
   </tfoot>
 </table>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Confirmar Exclusão?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()">
+      Sim
+    </button>
+    <button type="button" class="btn btn-primary" (click)="decline()">
+      Não
+    </button>
+  </div>
+</ng-template>

@@ -4,14 +4,25 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
+import { NavComponent } from './nav/nav.component';
 import { EventosComponent } from './eventos/eventos.component';
 import { PalestrantesComponent } from './palestrantes/palestrantes.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavComponent } from './nav/nav.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { EventoService } from './services/evento/Evento.service';
+
+import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
+import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -19,6 +30,7 @@ import { NavComponent } from './nav/nav.component';
     EventosComponent,
     PalestrantesComponent,
     NavComponent,
+    DateTimeFormatPipe,
   ],
   imports: [
     BrowserModule,
@@ -27,9 +39,20 @@ import { NavComponent } from './nav/nav.component';
     NgbModule,
     BrowserAnimationsModule,
     CollapseModule.forRoot(),
+    TooltipModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+      progressBar: true,
+      progressAnimation: 'decreasing',
+    }),
     FormsModule,
+    NgxSpinnerModule,
   ],
-  providers: [],
+  providers: [EventoService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

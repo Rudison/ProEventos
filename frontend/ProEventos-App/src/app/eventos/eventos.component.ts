@@ -1,24 +1,36 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrService } from 'ngx-toastr';
+import { Evento } from '../models/Evento';
+import { EventoService } from '../services/evento/Evento.service';
 
 @Component({
   selector: 'app-eventos',
   templateUrl: './eventos.component.html',
   styleUrls: ['./eventos.component.scss'],
+  // providers: [EventoService]
 })
 export class EventosComponent implements OnInit {
   //
-  constructor(private http: HttpClient) {}
+  modalRef?: BsModalRef;
 
-  ngOnInit(): void {
+  constructor(
+    private eventoService: EventoService,
+    private modalService: BsModalService,
+    private toastr: ToastrService
+  ) {}
+
+  public ngOnInit(): void {
     this.getEventos();
   }
 
-  public eventos: any = [];
-  public eventosFiltrados: any = [];
+  public eventos: Evento[] = [];
+  public eventosFiltrados: Evento[] = [];
+
   public esconderImagens: boolean = true;
-  widthImg: number = 100;
-  marginImg: number = 2;
+
+  public widthImg: number = 100;
+  public marginImg: number = 2;
 
   private _filtroLista: string = '';
 
@@ -32,7 +44,7 @@ export class EventosComponent implements OnInit {
       : this.eventos;
   }
 
-  filtrarEventos(filtrarPor: string): any {
+  public filtrarEventos(filtrarPor: string): Evento[] {
     filtrarPor = filtrarPor.toLocaleLowerCase();
     return this.eventos.filter(
       (evento: any) =>
@@ -42,15 +54,36 @@ export class EventosComponent implements OnInit {
   }
 
   public getEventos(): void {
-    this.http.get('https://localhost:5001/api/eventos').subscribe(
-      (response) => {
-        this.eventos = response;
+    const observer = {
+      next: (eventos: Evento[]) => {
+        this.eventos = eventos;
         this.eventosFiltrados = this.eventos;
       },
-      (error) => console.log(error)
-    );
+      error: (error: any) => console.log(error),
+      complete: () => {},
+    };
+
+    this.eventoService.getEventos().subscribe(observer);
+    // (eventos: Evento[]) => {
+    //   this.eventos = eventos;
+    //   this.eventosFiltrados = this.eventos;
+    // },
+    // (error) => console.log(error)
   }
   public EsconderImagens(): void {
     this.esconderImagens = !this.esconderImagens;
+  }
+
+  openModal(template: TemplateRef<any>): void {
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  confirm(): void {
+    this.toastr.success('Evento excluido com sucesso', 'Excluido!');
+    this.modalRef?.hide();
+  }
+
+  decline(): void {
+    this.modalRef?.hide();
   }
 }
